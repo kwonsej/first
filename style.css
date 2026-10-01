@@ -31,7 +31,14 @@
     --tab-on: #b39a8c;
     --pink: #5a3836;
     --shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --desk: #1d1a18; --paper: #2a2522; --paper-2: #312b27; --line: #3d3631; --grid: #38312c;
+  --ink: #ece4dc; --ink-soft: #a89a8f; --brown: #d4b8a8; --tab: #3a332e; --tab-on: #b39a8c;
+  --pink: #5a3836; --shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -167,6 +174,8 @@ h1 {
 .dday.soon { background: var(--pink); color: var(--red); }
 .dday.over { background: var(--red); color: #fff; }
 
+.del.armed { opacity: 1; color: var(--red); font-size: 0.8rem; }
+.form-msg { width: 100%; margin: 0; color: var(--red); font-size: 0.82rem; }
 .del {
   border: 0; background: transparent; color: var(--ink-soft); cursor: pointer;
   opacity: 0; transition: opacity 0.15s; font-size: 1.1rem;
@@ -267,7 +276,7 @@ input.hand:focus, textarea.hand:focus { border-bottom-color: var(--tab-on); }
   .paper { border-radius: 0; padding: 18px 16px 80px; min-height: 100vh; }
   .index-tabs {
     flex-direction: row; padding: 0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
-    background: var(--paper); box-shadow: 0 -2px 10px rgba(0,0,0,0.08); gap: 0;
+    background: var(--paper); box-shadow: 0 -2px 10px rgba(0,0,0,0.08); gap: 0; padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   .tab { writing-mode: horizontal-tb; flex: 1; border-radius: 0; padding: 14px 0; box-shadow: none; transform: none !important; }
   .spread { grid-template-columns: 1fr; }

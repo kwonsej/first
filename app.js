@@ -12,7 +12,11 @@ const defaultState = () => ({
     { id: uid(), name: "독서 30분", time: "22:00", days: [0, 1, 2, 3, 4, 5, 6], color: COLORS[2] },
   ],
   logs: {}, // { "YYYY-MM-DD": [routineId, ...] }
-  tasks: [],
+  tasks: [
+    { id: uid(), title: "레포트 초안 쓰기", subject: "예시 과제", start: todayKey(), due: addDays(todayKey(), 2), memo: "", color: COLORS[2], done: false,
+      steps: [{ id: uid(), text: "자료 조사", done: true }, { id: uid(), text: "목차 잡기", done: false }] },
+    { id: uid(), title: "중간 발표 준비", subject: "예시 과제", start: todayKey(), due: addDays(todayKey(), 10), memo: "예시예요. ×를 두 번 눌러 지울 수 있어요", color: COLORS[0], done: false, steps: [] },
+  ],
 });
 
 let state = load();
@@ -185,8 +189,8 @@ function renderRoutine() {
       h("span", { class: "time" }, r.time || "--:--"),
       h("span", { class: "text hand" }, r.name),
       h("span", { class: "meta" }, r.days.length === 7 ? "매일" : r.days.slice().sort().map((d) => DOW[d]).join(" ")),
-      h("button", { class: "del", title: "삭제", onclick: () => {
-        if (!confirm(`'${r.name}' 루틴을 삭제할까요?`)) return;
+      h("button", { class: "del", title: "삭제", onclick: (e) => {
+        if (!armDelete(e.currentTarget)) return;
         state.routines = state.routines.filter((x) => x.id !== r.id);
         commit();
       } }, "×"),
@@ -209,8 +213,8 @@ function renderTasks() {
         h("input", { type: "checkbox", class: "check", checked: t.done, onchange: () => toggleTask(t.id) }),
         h("span", { class: "text hand" }, t.title),
         h("span", { class: `dday ${dd.cls}` }, dd.label),
-        h("button", { class: "del", title: "삭제", onclick: () => {
-          if (!confirm(`'${t.title}' 과제를 삭제할까요?`)) return;
+        h("button", { class: "del", title: "삭제", onclick: (e) => {
+          if (!armDelete(e.currentTarget)) return;
           state.tasks = state.tasks.filter((x) => x.id !== t.id);
           commit();
         } }, "×")),
@@ -266,6 +270,22 @@ function renderMonth() {
 }
 
 // ---------- 이벤트 ----------
+// 삭제는 두 번 눌러야 실행 (첫 클릭은 '삭제?'로 바뀌고 3초 뒤 원래대로)
+function armDelete(btn) {
+  if (btn.classList.contains("armed")) return true;
+  btn.classList.add("armed");
+  btn.textContent = "삭제?";
+  setTimeout(() => { btn.classList.remove("armed"); btn.textContent = "×"; }, 3000);
+  return false;
+}
+function flash(form, msg) {
+  let el = form.querySelector(".form-msg");
+  if (!el) { el = h("p", { class: "form-msg" }); form.append(el); }
+  el.textContent = msg;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.remove(), 3500);
+}
+
 function setupSwatches(container, key) {
   const draw = () => container.replaceChildren(...COLORS.map((c) =>
     h("button", { type: "button", class: `swatch ${ui[key] === c ? "on" : ""}`, style: `background:${c}`,
@@ -310,7 +330,7 @@ function init() {
     e.preventDefault();
     const f = e.target;
     const days = [...f.querySelectorAll("[name=days]:checked")].map((x) => Number(x.value));
-    if (!days.length) return alert("요일을 하나 이상 골라주세요.");
+    if (!days.length) return flash(f, "요일을 하나 이상 골라주세요.");
     state.routines.push({ id: uid(), name: f.elements.name.value.trim(), time: f.elements.time.value, days, color: ui.newRoutineColor });
     f.elements.name.value = ""; f.elements.time.value = "";
     commit();
@@ -320,7 +340,7 @@ function init() {
   $("#taskForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const f = e.target;
-    if (f.elements.start.value && f.elements.start.value > f.elements.due.value) return alert("마감일이 시작일보다 빨라요.");
+    if (f.elements.start.value && f.elements.start.value > f.elements.due.value) return flash(f, "마감일이 시작일보다 빨라요. 날짜를 다시 확인해 주세요.");
     addTask({ title: f.elements.title.value, subject: f.elements.subject.value, start: f.elements.start.value, due: f.elements.due.value, memo: f.elements.memo.value, color: ui.newTaskColor });
     f.reset(); f.elements.start.value = todayKey();
   });
