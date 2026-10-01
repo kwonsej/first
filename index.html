@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>나의 플래너</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Pen+Script&family=Playfair+Display:wght@600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="notebook">
+    <main class="paper">
+      <header class="page-head">
+        <div class="month-nav">
+          <button class="icon-btn" id="prevMonth" aria-label="이전 달">‹</button>
+          <h1 id="monthTitle">2026 October</h1>
+          <button class="icon-btn" id="nextMonth" aria-label="다음 달">›</button>
+        </div>
+        <label class="goal">
+          <span class="goal-label">인생목표:</span>
+          <input id="goalInput" class="hand" placeholder="여기에 목표를 적어보세요" />
+        </label>
+      </header>
+
+      <!-- 오늘 -->
+      <section class="view" id="view-today">
+        <div class="spread">
+          <div class="leaf">
+            <div class="leaf-head">
+              <button class="icon-btn" id="prevDay">‹</button>
+              <h2 id="todayTitle"></h2>
+              <button class="icon-btn" id="nextDay">›</button>
+              <button class="chip" id="gotoToday">오늘</button>
+            </div>
+            <h3 class="section-title">Daily Routine <small id="routineRate"></small></h3>
+            <ul class="lined-list" id="todayRoutines"></ul>
+            <p class="empty hand" id="todayRoutinesEmpty">오늘 할 루틴이 없어요. ‘루틴’ 탭에서 추가해 보세요.</p>
+          </div>
+          <div class="leaf">
+            <h3 class="section-title">과제 · 마감 임박</h3>
+            <form class="quick-add" id="quickTaskForm">
+              <input class="hand" name="title" placeholder="+ 과제 빠르게 추가" required />
+              <input type="date" name="due" required />
+              <button class="chip">추가</button>
+            </form>
+            <ul class="lined-list" id="todayTasks"></ul>
+            <p class="empty hand" id="todayTasksEmpty">마감이 다가오는 과제가 없어요 ✈</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 루틴 -->
+      <section class="view" id="view-routine" hidden>
+        <div class="leaf wide">
+          <h3 class="section-title">루틴 트래커</h3>
+          <div class="tracker-wrap"><table class="tracker" id="tracker"></table></div>
+        </div>
+        <div class="leaf wide">
+          <h3 class="section-title">루틴 관리</h3>
+          <form class="routine-form" id="routineForm">
+            <input class="hand" name="name" placeholder="루틴 이름 (예: 07:00 기상, 영어 단어 30개)" required />
+            <input type="time" name="time" />
+            <div class="days" id="dayPicker"></div>
+            <div class="swatches" data-name="color"></div>
+            <button class="chip solid">루틴 추가</button>
+          </form>
+          <ul class="lined-list" id="routineList"></ul>
+        </div>
+      </section>
+
+      <!-- 과제 -->
+      <section class="view" id="view-task" hidden>
+        <div class="spread">
+          <div class="leaf">
+            <h3 class="section-title">새 과제</h3>
+            <form class="task-form" id="taskForm">
+              <input class="hand" name="title" placeholder="과제 이름" required />
+              <input class="hand" name="subject" placeholder="과목 / 분류" />
+              <div class="row">
+                <label>시작 <input type="date" name="start" /></label>
+                <label>마감 <input type="date" name="due" required /></label>
+              </div>
+              <textarea class="hand" name="memo" rows="2" placeholder="메모"></textarea>
+              <div class="swatches" data-name="color"></div>
+              <button class="chip solid">과제 추가</button>
+            </form>
+            <div class="filters" id="taskFilters">
+              <button class="chip on" data-filter="open">진행중</button>
+              <button class="chip" data-filter="done">완료</button>
+              <button class="chip" data-filter="all">전체</button>
+            </div>
+          </div>
+          <div class="leaf">
+            <h3 class="section-title">과제 목록</h3>
+            <ul class="task-cards" id="taskList"></ul>
+            <p class="empty hand" id="taskListEmpty">과제가 없어요.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 월간 -->
+      <section class="view" id="view-month" hidden>
+        <div class="leaf wide">
+          <div class="cal" id="calendar"></div>
+          <p class="legend"><span class="dot"></span> 루틴 달성률 &nbsp; <span class="bar-sample"></span> 과제 기간</p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="index-tabs" aria-label="섹션">
+      <button class="tab on" data-view="today">오늘</button>
+      <button class="tab" data-view="routine">루틴</button>
+      <button class="tab" data-view="task">과제</button>
+      <button class="tab" data-view="month">월간</button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
